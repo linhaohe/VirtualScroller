@@ -1,5 +1,6 @@
 import React from 'react';
 import VirtualScroller from './components/virualScroller';
+import Testing from './components/testing';
 // min: the starting index
 // max: the ending index
 // start: the inital postion to display
@@ -39,7 +40,8 @@ const getData = (offset,limit) =>{
     return data;
 }
 function App(){
-     return <VirtualScroller settings={SETTINGS} data={getData} row={rowTemplate}/>
+    //  return <VirtualScroller settings={SETTINGS} data={getData} row={rowTemplate}/>
+    return <Testing/>
 }
 
 export default App;
