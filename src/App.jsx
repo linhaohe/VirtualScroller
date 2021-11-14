@@ -1,47 +1,83 @@
-import React from 'react';
-import VirtualScroller from './components/virualScroller';
-import Testing from './components/testing';
-// min: the starting index
-// max: the ending index
-// start: the inital postion to display
-// itemHeight: the height of each row that displays
-// amount: the amount that display at a time
-// tolerance: the view point's outlet
+import React, { useEffect, useState } from "react";
+import VirtualScroller from "./components/VirtualScroller";
+import { csv } from "d3";
+import csvdata from "./components/data.csv";
+import './index.css';
+
 const SETTINGS = {
-    min:1,
-    max:100,
-    start:1,
-    itemHeight:20,
-    amount:5,
-    tolerance:2
+  //height of each box
+  itemHeight: 97,
+  //width of each box
+  itemWidth: 97,
+  //the extra amount that were load in
+  tolerance: 5,
+  //where you want to start
+  //the amount of row to be display
+  maxRow: 20,
+  //index to start
+  startIndex: 0,
+  amount: 17
+};
+
+//construct the columns of each row
+const rowTemplate2D = (row, rowIndex) => {
+  var indents = [];
+  for (let i = 0; i < row.length; i++) {
+    indents.push(<td key={`${rowIndex}` + `${i}`}><div className="textBox" style={{ height: SETTINGS.itemHeight, width: SETTINGS.itemWidth }}>{row[i]}</div></td>);
+  }
+  return indents;
 }
 
-const rowTemplate = (item) =>(
-    <div className="item" key = {item.index}>{item.text} </div>
-)
+//Consturct the entire table as a 2D array
+const template2D = (item) => {
+  var indents = [];
+  indents = item.map((target, index) => (
+    <tr key={index} style={{ height: SETTINGS.itemHeight }}>
+      {rowTemplate2D(target, index)}
+    </tr>
+  ))
 
-const getData = (offset,limit) =>{
-    const data = [];
+  return <>{indents}</>;
+}
 
-    //the default starting index is in setting comparing with offset determins the begging index of the scroller
-    const start = Math.max(SETTINGS.min,offset);
-    
-    //determing where to end offset + limit - 1 will give me the ending index of scroller as long as is not out of bound
-    const end = Math.min(offset + limit ,SETTINGS.max);
+//Get the data that is specify my the function caller 
+const getDataCSV = (offsetX, limitX, dataObject) => {
+  if (typeof dataObject === "undefined") {
+    return [];
+  }
+  const data = [];
+  const startX = Math.max(0, offsetX);
+  const endX = Math.min(offsetX + limitX - 1, dataObject[0].length);
 
-    //check if the index are valid
-    if(start <= end){
-        //push all rows into array
-        for(let i = start; i<end; i++){
-            //each index were cast into a JSON object then push into data
-            data.push({index:i,text:`item ${i}`});
-        }
+  if (startX <= endX) {
+    for (let i = 0; i < SETTINGS.maxRow; i++) {
+      data[i] = [];
+      for (let j = startX; j < endX; j++) {
+        data[i][j - startX] = dataObject[i][j];
+      }
     }
-    return data;
+  }
+  return data;
 }
-function App(){
-    //  return <VirtualScroller settings={SETTINGS} data={getData} row={rowTemplate}/>
-    return <Testing/>
+
+
+function App() {
+  const [dataObject, setdataObject] = useState();
+  //Get the data from the local CSV files
+  useEffect(async () => {
+    await csv(csvdata).then(data => {
+      //Put them into a 2D array where each row is the row and colum is the field
+      let data2D = data.map(tag => Object.values(tag));
+      setdataObject(data2D);
+    })
+  }, []);
+
+  //handle is cause where data retrive is null
+  if (!dataObject) {
+    return <p>Loading ...</p>;
+  }
+  return <VirtualScroller get={getDataCSV} dataObject={dataObject} settings={SETTINGS} template={template2D} />
+
 }
 
 export default App;
