@@ -4,21 +4,29 @@ table{
 
 }
 
-td, th {
+td {
     border: 1px solid #999;
     padding: 0.5rem;
     text-align: left;
     overflow: hidden;
   }
 
+th{
+    border: 1px solid #999;
+    padding: 0.5rem;
+    background-color: rgb(238, 238, 238);
+    position: sticky;
+    top: 0;
+}
 body{
     margin: 0;
 }
 .textBox{
-    word-wrap: break-word;
-    overflow: hidden;
+    font-size: 1rem;
+    text-align: center;
 }
 
 table{
     display: inline;
 }
+

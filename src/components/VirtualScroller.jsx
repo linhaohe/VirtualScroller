@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 
 const getInitialState = (settings, maxIndex, get, dataObject) => {
-  const { itemWidth, tolerance, startIndex, amount } = settings
+  const { avergeWidth, tolerance, startIndex, amount } = settings
 
   //The calculate the visible width that render
-  const viewportWidthX = amount * itemWidth
+  const viewportWidthX = amount * avergeWidth
 
   //Find the max width of the entire scorller
-  const totalwidth = (maxIndex + 1) * itemWidth
+  const totalwidth = (maxIndex + 1) * avergeWidth
 
   //the height of one the buffer sournding the visible viewport
-  const tolerancewidth = tolerance * itemWidth
+  const tolerancewidth = tolerance * avergeWidth
 
   //the total width of the table that is being render
   const bufferWidth = viewportWidthX + 2 * tolerancewidth
@@ -22,7 +22,7 @@ const getInitialState = (settings, maxIndex, get, dataObject) => {
   const itemsLeft = startIndex - tolerance
 
   //calculate the amount of space base on the amount of items on the left
-  const leftPaddingWidth = itemsLeft * itemWidth
+  const leftPaddingWidth = itemsLeft * avergeWidth
 
   //calculate the amount of space base on the left padding
   const rightPaddingWidth = totalwidth - leftPaddingWidth
@@ -45,18 +45,18 @@ const getInitialState = (settings, maxIndex, get, dataObject) => {
 }
 
 const getNewState = (state, get, dataObject, scrollRight) => {
-  const { totalwidth, tolerancewidth, bufferedItems, settings: { itemWidth } } = state
+  const { totalwidth, tolerancewidth, bufferedItems, settings: { avergeWidth } } = state
   //update initial postion of the user
-  const index = Math.floor((scrollRight - tolerancewidth) / itemWidth)
+  const index = Math.floor((scrollRight - tolerancewidth) / avergeWidth)
 
   //get the amount of data that is needed to render
   const data = get(index, bufferedItems, dataObject)
 
   //calculate the amount of left pading base on the new index
-  const leftPaddingWidth = Math.max((index) * itemWidth, 0)
+  const leftPaddingWidth = Math.max((index) * avergeWidth, 0)
 
   //calcuate the amount of right padding
-  const rightPaddingWidth = Math.max(totalwidth - leftPaddingWidth - data.length * itemWidth, 0)
+  const rightPaddingWidth = Math.max(totalwidth - leftPaddingWidth - data.length * avergeWidth, 0)
 
   return {
     ...state,
@@ -94,11 +94,9 @@ const Scroller = ({ get, template, settings, dataObject }) => {
   return (
     <>
       <span style={{ paddingLeft: state.leftPaddingWidth }}></span>
-      <table>
-        <tbody>
+
           {template(state.data)}
-        </tbody>
-      </table>
+
       <span style={{ paddingRight: state.rightPaddingWidth }}></span>
     </>
   )
