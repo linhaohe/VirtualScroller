@@ -106,13 +106,13 @@ function App() {
   if (!dataObject) {
     return <p>Loading ...</p>;
   }
-  let totalWidth = getTotalWidth(dataObject[0]);
+  let totalWidth = getTotalWidth(dataObject[1]);
   SETTINGS = {...SETTINGS,
               totalWidth:totalWidth,
               avergeWidth:Math.floor(totalWidth/dataObject.length)
             }
   
-              console.log(dataObject[0].length)
+              console.log(totalWidth)
   return <VirtualScroller get={getDataCSV} dataObject={dataObject} settings={SETTINGS} template={template2D} />
 
 }
