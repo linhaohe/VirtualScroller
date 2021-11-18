@@ -7,7 +7,6 @@ table{
 td {
     border: 1px solid #999;
     padding: 0.5rem;
-    text-align: left;
     overflow: hidden;
   }
 
@@ -24,6 +23,7 @@ body{
 .textBox{
     font-size: 1rem;
     text-align: center;
+    margin: auto;
 }
 
 table{
